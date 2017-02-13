@@ -8,8 +8,9 @@ export default {
   acorn: {
     allowReserved: true
   },
-  dest: 'dist/multihop-forces.js',
+  dest: 'dist/graph-hops.js',
   format: 'iife',
+  moduleName: 'graphHops',
   // sourceMap: 'inline',
   plugins: [
     resolve({
