@@ -168,13 +168,12 @@ function graphHops(nodes, edges) {
   var hops = {};
   hopMatrix.forEach(function (row, i) {
     row.forEach(function (hop, j) {
-      if (hops <= 1) {
-        return;
+      if (hop > 1) {
+        if (!hops[hop]) {
+          hops[hop] = [];
+        }
+        hops[hop].push({ source: nodes[i], target: nodes[j] });
       }
-      if (!hops[hop]) {
-        hops[hop] = [];
-      }
-      hops[hop].push({ source: nodes[i], target: nodes[j] });
     });
   });
   return hops;

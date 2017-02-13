@@ -17,9 +17,10 @@ function graphHops(nodes,edges){
   var hops = {}
   hopMatrix.forEach((row,i)=>{
     row.forEach((hop,j)=>{
-      if(hops <= 1){ return }
-      if(!hops[hop]){hops[hop] = []};
-      hops[hop].push({source: nodes[i], target: nodes[j]})
+      if(hop > 1){
+        if(!hops[hop]){hops[hop] = []};
+        hops[hop].push({source: nodes[i], target: nodes[j]})
+      }
     })
   })
   return hops;

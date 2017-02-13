@@ -10,6 +10,7 @@ describe('graphHops', function() {
               ];
   describe('hops', function() {
     var hops = gh.graphHops(nodes,edges);
+    console.log(hops);
     it('should give expected results with simple graph', function() {
       assert.equal(hops[2][0].source,"a");
       assert.equal(hops[2][0].target,"c");
