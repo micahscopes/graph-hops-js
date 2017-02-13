@@ -9,7 +9,7 @@ export default {
     allowReserved: true
   },
   dest: 'dist/graph-hops.js',
-  format: 'iife',
+  format: 'cjs',
   moduleName: 'graphHops',
   // sourceMap: 'inline',
   plugins: [
