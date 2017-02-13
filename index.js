@@ -1,6 +1,6 @@
 import FloydWarshall from 'floyd-warshall'
 
-export function unweightedAdjacencyMatrix(nodes,edges){
+function unweightedAdjacencyMatrix(nodes,edges){
   if (nodes.length < 2) { return []; }
   var adj = [];
   for(var i=0; i<nodes.length; i++) { adj[i] = new Array(nodes.length); }
@@ -11,7 +11,7 @@ export function unweightedAdjacencyMatrix(nodes,edges){
   return adj;
 }
 
-export function hops(nodes,edges){
+function graphHops(nodes,edges){
   var adj = unweightedAdjacencyMatrix(nodes,edges);
   var hopMatrix = new FloydWarshall(adj).shortestPaths;
   var hops = {}
@@ -24,3 +24,5 @@ export function hops(nodes,edges){
   })
   return hops;
 }
+
+export {unweightedAdjacencyMatrix, graphHops};

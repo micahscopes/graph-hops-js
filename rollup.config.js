@@ -2,15 +2,26 @@
 import babel from 'rollup-plugin-babel';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+var pkg = require('./package.json');
 
 export default {
   entry: 'index.js',
   acorn: {
     allowReserved: true
   },
-  dest: 'dist/graph-hops.js',
-  format: 'cjs',
-  moduleName: 'graphHops',
+  targets: [
+    {
+      dest: pkg.main,
+      format: 'umd',
+      moduleName: 'graphHops',
+      sourceMap: true
+    },
+    {
+      dest: pkg.module,
+      format: 'es',
+      sourceMap: true
+    }
+  ],
   // sourceMap: 'inline',
   plugins: [
     resolve({
