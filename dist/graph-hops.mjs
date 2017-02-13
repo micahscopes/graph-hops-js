@@ -1,9 +1,3 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.graphHops = global.graphHops || {})));
-}(this, (function (exports) { 'use strict';
-
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -180,10 +174,5 @@ function graphHops(nodes, edges) {
   return hops;
 }
 
-exports.unweightedAdjacencyMatrix = unweightedAdjacencyMatrix;
-exports.graphHops = graphHops;
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-//# sourceMappingURL=graph-hops.js.map
+export { unweightedAdjacencyMatrix, graphHops };
+//# sourceMappingURL=graph-hops.mjs.map

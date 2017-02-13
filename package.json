@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "",
   "main": "dist/graph-hops.js",
-  "module": "dist/rollup-starter-project.mjs",
+  "module": "dist/graph-hops.mjs",
   "scripts": {
     "test": "mocha test/test.js",
     "build": "rollup -c"
