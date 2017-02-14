@@ -147,7 +147,12 @@ var FloydWarshall = function () {
 
 var index = FloydWarshall;
 
-function unweightedAdjacencyMatrix(nodes, edges) {
+function unweightedAdjacencyMatrix(nodes, edges, id) {
+  if (!id) {
+    id = function id(obj) {
+      return obj;
+    };
+  }
   if (nodes.length < 2) {
     return [];
   }
@@ -157,22 +162,29 @@ function unweightedAdjacencyMatrix(nodes, edges) {
   }
 
   edges.forEach(function (edge) {
-    adj[nodes.indexOf(edge.source)][nodes.indexOf(edge.target)] = 1;
+    adj[nodes.indexOf(nodes.find(function (o) {
+      return id(o) == edge.source;
+    }))][nodes.indexOf(nodes.find(function (o) {
+      return id(o) == edge.target;
+    }))] = 1;
   });
   return adj;
 }
 
-function graphHops(nodes, edges) {
-  var adj = unweightedAdjacencyMatrix(nodes, edges);
+function graphHops(nodes, edges, id, proto) {
+  var adj = unweightedAdjacencyMatrix(nodes, edges, id);
   var hopMatrix = new index(adj).shortestPaths;
-  var hops = {};
+  var hops = { 1: edges };
   hopMatrix.forEach(function (row, i) {
     row.forEach(function (hop, j) {
       if (hop > 1) {
         if (!hops[hop]) {
           hops[hop] = [];
         }
-        hops[hop].push({ source: nodes[i], target: nodes[j] });
+        var h = {};
+        if (proto) proto(h);
+        h.source = nodes[i];h.target = nodes[j];
+        hops[hop].push(h);
       }
     });
   });

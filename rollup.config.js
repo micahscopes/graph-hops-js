@@ -31,22 +31,9 @@ export default {
       preferBuiltins: true  // Default: true
     }),
     commonjs(),
-    // eslint({
-    //   exclude: [
-    //     'src/styles/**',
-    //   ]
-    // }),
     babel({
-      // exclude: [
-      //  'node_modules/**',
-      // '*.json'
-      // ],
-      // include: [
-      //   'node_modules/**'
-      // ],
       presets: [
         ['es2015', { modules: false }],
-          // 'stage-2'
       ],
       plugins: [
         // 'transform-class-properties',
