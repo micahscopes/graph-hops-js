@@ -20,7 +20,7 @@
     "vis": "^4.21.0"
   },
   "install": {
-    "path": {"js": "lib", "LICENSE": "lib"},
+    "path": {"js": "lib", "LICENSE": "lib", "css": "lib"},
     "sources": {
       "graph-hops": "bower_components/graph-hops/dist/*.js"
     }
