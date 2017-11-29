@@ -1,24 +1,108 @@
 <script src='./bower_components/graph-hops-js/dist/graph-hops.js'></script>
 <script src='./bower_components/vis/dist/vis-network.min.js'></script>
+
+<style type="text/css">
+
+  body{
+    width: 80%;
+    margin: 1em auto;
+  }
+
+  .vis-network {
+    border: 1px solid lightgray;
+  }
+
+  body {
+      color: #d3d3d3;
+      font: 12pt arial;
+      background-color: #222222;
+  }
+
+
+</style>
+
 <body>
-<div id='graph'></div>
+<!-- create an example graph -->
 <script type='text/javascript'>
-    var data = {
-        nodes: [{id: 'a'}, {id: 'b'}, {id: 'c'}, {id: 'd'}],
-        edges: [{ from: "a", to: "b" },
+    var graph = {
+        nodes: [
+            {id: 'a', group: 0 },
+            {id: 'b', group: 1 },
+            {id: 'c', group: 2 },
+            {id: 'd', group: 3 },
+            {id: 'e', group: 4 }
+        ],
+        edges: [{ from: "a", to: "b", arrows: 'to' },
                 { from: "b", to: "c", arrows: 'to' },
                 { from: "c", to: "d", arrows: 'to' },
-                { from: "d", to: "a", arrows: 'to' }]
+                { from: "d", to: "a", arrows: 'to' },
+                { from: "d", to: "e", arrows: 'to' }]
     }
-    data.nodes.forEach(function(n) { n.label = n.id });
-    var container = document.querySelector('body');
-    var options = {};
-    var network = new vis.Network(container, data, options);
-    
+    graph.nodes.forEach(function(n) { n.label = n.id });
+</script>
+
+<!-- use graph-hops-js to derive the 'n-hop' graphs -->
+<script type='text/javascript'>
+    var makeHop = function(from,to,distance,id){
+        var dashes = []
+        for(var i=0; i<distance-1; i++){
+            dashes = dashes.concat([2,3]);
+        }
+        dashes.push(2,10);
+        return {
+            from: id(from),
+            to: id(to),
+            arrows: 'to',
+            dashes: dashes,
+            distance: distance
+        }
+    }
     var hopOpts = { id: (n)=>n.id,
                     source: (edge) => edge.from,
                     target: (edge) => edge.to,
-                    makeHop: Hops.makeHopVisJS }
-    var hops = Hops.graphHops(data.nodes, data.edges, hopOpts)
+                    makeHop: makeHop }
+    var hops = Hops.graphHops(graph.nodes, graph.edges, hopOpts)
+
+</script>
+
+<!-- draw the original graph and its 'n-hop' graphs with vis.js -->
+<script type='text/javascript'>
+    var container = document.querySelector('body');
+
+    var options = {
+        nodes: {
+            shape: 'dot',
+            size: 10,
+            font: {
+                size: 32,
+                color: '#ffffff'
+            },
+            borderWidth: 2
+        },
+        edges: {
+            width: 2,
+            arrows: {
+                to: {
+                    scaleFactor: 1,
+                    type: 'arrow' 
+                }
+            }
+        }
+    };
+
+    Object.keys(hops).forEach(function(k,i){
+        var hopGraph = { nodes: graph.nodes, edges: hops[k] }
+        
+        heading = document.createElement('h2')
+        heading.innerHTML = `${i+1}-hop graph`
+        if (i==0) {
+            heading.innerHTML = `original graph (1-hop)`
+        }
+        
+        el = document.createElement('div')
+        container.appendChild(heading)
+        container.appendChild(el)
+        new vis.Network(el,hopGraph,options)
+    })
 </script>
 </body>
