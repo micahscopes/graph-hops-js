@@ -1,5 +1,6 @@
 <script src='./bower_components/graph-hops-js/dist/graph-hops.js'></script>
 <script src='./bower_components/vis/dist/vis-network.min.js'></script>
+<title>graph-hops-js example</title>
 
 <style type="text/css">
 
@@ -54,7 +55,8 @@
             to: id(to),
             arrows: 'to',
             dashes: dashes,
-            distance: distance
+            distance: distance,
+            color: { opacity: 0.5, color: '#ccc'}
         }
     }
     var hopOpts = { id: (n)=>n.id,
@@ -104,5 +106,43 @@
         container.appendChild(el)
         new vis.Network(el,hopGraph,options)
     })
+
+    var allHopsGraph = { nodes: graph.nodes, edges: [].concat(...Object.values(hops)) };
+    allHopsGraph.edges.forEach(function(edge){
+        if(edge.distance > 1){
+            edge.physics = false;
+            edge.color = { opacity: 0.5, color: '#ccc'};
+            edge.width = 1;
+            edge.smooth = false;
+            edge.label = String(edge.distance);
+        } else {
+            edge.length = 500;
+            edge.width = 3;
+            edge.smooth = true;
+        }
+    })
+    
+
+    heading = document.createElement('h2')
+    heading.innerHTML = `all n-hop graphs`
+    
+    el = document.createElement('div')
+    container.appendChild(heading)
+    container.appendChild(el)
+    options.edges.chosen = { label: 
+        function(values, id, selected, hovering) {
+            values.size = 50;
+            values.strokeColor = '#111'
+            values.color = '#fff'
+        },
+    edge: 
+        function(values, id, selected, hovering) {
+            values.width = 4;
+            values.opacity = 1;
+        }
+    }
+    options.edges.font = { strokeColor: 'rgba(0,0,0,0)', color: 'rgba(0,0,0,0)'  }
+    new vis.Network(el,allHopsGraph,options)
+    
 </script>
 </body>
