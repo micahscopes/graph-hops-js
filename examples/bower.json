@@ -16,7 +16,13 @@
     "tests"
   ],
   "dependencies": {
-    "graph-hops-js": "https://github.com/micahscopes/graph-hops-js.git",
+    "graph-hops": "https://github.com/micahscopes/graph-hops-js.git",
     "vis": "^4.21.0"
+  },
+  "install": {
+    "path": {"js": "lib", "LICENSE": "lib"},
+    "sources": {
+      "graph-hops": "bower_components/graph-hops/dist/*.js"
+    }
   }
 }
