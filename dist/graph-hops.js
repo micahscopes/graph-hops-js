@@ -147,12 +147,23 @@ var FloydWarshall = function () {
 
 var index = FloydWarshall;
 
-function unweightedAdjacencyMatrix(nodes, edges, id) {
+function unweightedAdjacencyMatrix(nodes, edges, id, source, target) {
   if (!id) {
-    id = function id(obj) {
-      return obj;
+    id = function id(node) {
+      return node;
     };
   }
+  if (!source) {
+    source = function source(edge) {
+      return edge.source;
+    };
+  }
+  if (!target) {
+    target = function target(edge) {
+      return edge.target;
+    };
+  }
+
   if (nodes.length < 2) {
     return [];
   }
@@ -162,16 +173,25 @@ function unweightedAdjacencyMatrix(nodes, edges, id) {
   }
 
   edges.forEach(function (edge) {
-    adj[nodes.indexOf(nodes.find(function (o) {
-      return id(o) == edge.source;
-    }))][nodes.indexOf(nodes.find(function (o) {
-      return id(o) == edge.target;
+    adj[nodes.indexOf(nodes.find(function (node) {
+      return id(node) == source(edge);
+    }))][nodes.indexOf(nodes.find(function (node) {
+      return id(node) == target(edge);
     }))] = 1;
   });
   return adj;
 }
 
-function graphHops(nodes, edges, id, proto) {
+function makeHopD3(source, target) {
+  return { source: source, target: target };
+}
+
+function graphHops(nodes, edges, id, makeHop) {
+  // use the D3 style by default
+  if (!makeHop) {
+    makeHop = makeHopD3;
+  }
+
   var adj = unweightedAdjacencyMatrix(nodes, edges, id);
   var hopMatrix = new index(adj).shortestPaths;
   var hops = { 1: edges };
@@ -181,9 +201,7 @@ function graphHops(nodes, edges, id, proto) {
         if (!hops[hop]) {
           hops[hop] = [];
         }
-        var h = {};
-        if (proto) proto(h);
-        h.source = nodes[i];h.target = nodes[j];
+        var h = makeHop(nodes[i], nodes[j]);
         hops[hop].push(h);
       }
     });
