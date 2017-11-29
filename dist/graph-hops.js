@@ -192,7 +192,7 @@ function makeHopD3(source, target, hopDistance, id) {
 }
 
 function makeHopVisJS(source, target, hopDistance, id) {
-  return { from: id(source), to: target };
+  return { from: id(source), to: id(target) };
 }
 
 function graphHops(nodes, edges) {

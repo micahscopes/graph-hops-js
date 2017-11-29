@@ -4,12 +4,21 @@
 <div id='graph'></div>
 <script type='text/javascript'>
     var data = {
-        nodes: []
+        nodes: [{id: 'a'}, {id: 'b'}, {id: 'c'}, {id: 'd'}],
+        edges: [{ from: "a", to: "b" },
+                { from: "b", to: "c", arrows: 'to' },
+                { from: "c", to: "d", arrows: 'to' },
+                { from: "d", to: "a", arrows: 'to' }]
     }
-    // create a network
+    data.nodes.forEach(function(n) { n.label = n.id });
     var container = document.querySelector('body');
     var options = {};
-    //var network = new vis.Network(container, data, options);
-
+    var network = new vis.Network(container, data, options);
+    
+    var hopOpts = { id: (n)=>n.id,
+                    source: (edge) => edge.from,
+                    target: (edge) => edge.to,
+                    makeHop: Hops.makeHopVisJS }
+    var hops = Hops.graphHops(data.nodes, data.edges, hopOpts)
 </script>
 </body>
