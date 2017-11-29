@@ -1,0 +1,22 @@
+{
+  "name": "graph-hops-js examples",
+  "homepage": "https://github.com/micahscopes/graph-hops-js",
+  "authors": [
+    "Micah Fitch <micahscopes@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "graph-hops-js": "https://github.com/micahscopes/graph-hops-js.git",
+    "vis": "^4.21.0"
+  }
+}

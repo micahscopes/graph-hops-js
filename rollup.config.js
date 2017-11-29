@@ -13,7 +13,7 @@ export default {
     {
       dest: pkg.main,
       format: 'umd',
-      moduleName: 'graphHops',
+      moduleName: 'Hops',
       sourceMap: true
     },
     {
@@ -33,12 +33,12 @@ export default {
     commonjs(),
     babel({
       presets: [
-        ['es2015', { modules: false }],
+     ["env", { "modules": false }
+    ]
+
       ],
       plugins: [
-        // 'transform-class-properties',
         'external-helpers',
-        // 'transform-runtime'
       ],
       exclude: 'node_modules/babel-runtime/**',
     //   externalHelpers: true,

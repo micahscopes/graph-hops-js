@@ -1,7 +1,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.graphHops = global.graphHops || {})));
+	(factory((global.Hops = global.Hops || {})));
 }(this, (function (exports) { 'use strict';
 
 var classCallCheck = function (instance, Constructor) {
@@ -147,7 +147,12 @@ var FloydWarshall = function () {
 
 var index = FloydWarshall;
 
-function unweightedAdjacencyMatrix(nodes, edges, id, source, target) {
+function unweightedAdjacencyMatrix(nodes, edges) {
+  var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+      id = _ref.id,
+      source = _ref.source,
+      target = _ref.target;
+
   if (!id) {
     id = function id(node) {
       return node;
@@ -182,27 +187,41 @@ function unweightedAdjacencyMatrix(nodes, edges, id, source, target) {
   return adj;
 }
 
-function makeHopD3(source, target) {
-  return { source: source, target: target };
+function makeHopD3(source, target, hopDistance, id) {
+  return { source: id(source), target: id(target) };
 }
 
-function graphHops(nodes, edges, id, makeHop) {
+function makeHopVisJS(source, target, hopDistance, id) {
+  return { from: id(source), to: target };
+}
+
+function graphHops(nodes, edges) {
+  var _ref2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+      id = _ref2.id,
+      source = _ref2.source,
+      target = _ref2.target,
+      makeHop = _ref2.makeHop;
+
   // use the D3 style by default
+  if (!id) {
+    id = function id(node) {
+      return node;
+    };
+  }
   if (!makeHop) {
     makeHop = makeHopD3;
   }
-
-  var adj = unweightedAdjacencyMatrix(nodes, edges, id);
+  var adj = unweightedAdjacencyMatrix(nodes, edges, { id: id, source: source, target: target });
   var hopMatrix = new index(adj).shortestPaths;
   var hops = { 1: edges };
   hopMatrix.forEach(function (row, i) {
-    row.forEach(function (hop, j) {
-      if (hop > 1) {
-        if (!hops[hop]) {
-          hops[hop] = [];
+    row.forEach(function (hopDistance, j) {
+      if (hopDistance > 1) {
+        if (!hops[hopDistance]) {
+          hops[hopDistance] = [];
         }
-        var h = makeHop(nodes[i], nodes[j]);
-        hops[hop].push(h);
+        var h = makeHop(nodes[i], nodes[j], hopDistance, id);
+        hops[hopDistance].push(h);
       }
     });
   });
@@ -211,6 +230,8 @@ function graphHops(nodes, edges, id, makeHop) {
 
 exports.unweightedAdjacencyMatrix = unweightedAdjacencyMatrix;
 exports.graphHops = graphHops;
+exports.makeHopVisJS = makeHopVisJS;
+exports.makeHopD3 = makeHopD3;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
