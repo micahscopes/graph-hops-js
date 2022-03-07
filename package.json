@@ -1,13 +1,19 @@
 {
   "name": "graph-hops",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "",
-  "main": "dist/graph-hops.js",
-  "module": "dist/graph-hops.mjs",
+  "main": "dist/esm/index.js",
+  "module": "dist/mjs/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "scripts": {
-    "test": "mocha test/test.js",
+    "test": "mocha --require source-map-support/register test",
     "documentation": "documentation readme index.js --section=API",
-    "build": "rollup -c"
+    "build": "rimraf dist && mkdir dist && node esbuild.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,10 +24,13 @@
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.6.1",
     "documentation": "^5.3.3",
+    "esbuild": "^0.14.25",
     "mocha": "^3.2.0",
+    "rimraf": "^3.0.2",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^7.0.0",
-    "rollup-plugin-node-resolve": "^2.0.0"
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "source-map-support": "^0.5.21"
   }
 }

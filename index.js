@@ -1,48 +1,94 @@
-import FloydWarshall from 'floyd-warshall'
+import FloydWarshall from "floyd-warshall";
+import graphInterfaceDefault from "./graphInterfaces";
 
-function unweightedAdjacencyMatrix(nodes, edges, { id,source,target } = {} )
-{
-  if (!id) { id = (node) => node }
-  if (!source) { source = (edge) => edge.source } 
-  if (!target) { target = (edge) => edge.target }
-
-  if (nodes.length < 2) { return []; }
+function buildUnweightedAdjacencyMatrix(
+  nodes = [],
+  edges = [],
+  graphInterface = {}
+) {
+  graphInterface = { ...graphInterfaceDefault, ...graphInterface };
+  const { getNodeId, getSource, getTarget } = graphInterface;
   var adj = [];
-  for(var i=0; i<nodes.length; i++) { adj[i] = new Array(nodes.length); }
+  for (var i = 0; i < nodes.length; i++) {
+    adj[i] = new Array(nodes.length);
+  }
 
-  edges.forEach((edge)=>{
-    adj[nodes.indexOf(nodes.find( (node)=>id(node)==source(edge) ))]
-        [nodes.indexOf(nodes.find( (node)=>id(node)==target(edge) ))] = 1;
-  })
+  edges.forEach((edge) => {
+    adj[
+      nodes.indexOf(nodes.find((node) => getNodeId(node) == getSource(edge)))
+    ][
+      nodes.indexOf(nodes.find((node) => getNodeId(node) == getTarget(edge)))
+    ] = 1;
+  });
   return adj;
 }
 
-function makeHopD3(source, target, hopDistance, id ){
-  return {source: id(source), target: id(target)};
-}
+const iterateUndirected = (adjacencyMatrix, iterFn) => {
+  // only iterate over the upper triangular part of the adjacency matrix
+  for (let i = 0; i < adjacencyMatrix.length; i++) {
+    const row = adjacencyMatrix[i];
+    for (let j = i; j < row.length; j++) {
+      const entryValue = row[j];
+      iterFn(i, j, entryValue);
+    }
+  }
+};
 
-function makeHopVisJS(source, target, hopDistance, id){
-  return {from: id(source), to: id(target)};
-}
+const iterateDirected = (adjacencyMatrix, iterFn) => {
+  // use the whole adjacency matrix to build edges
+  adjacencyMatrix.forEach((row, i) => {
+    row.forEach((entryValue, j) => {
+      iterFn(i, j, entryValue);
+    });
+  });
+};
 
-function graphHops(nodes,edges,{ id,source,target,makeHop } = {}){
-  // use the D3 style by default
-  if (!id) { id = (node) => node }
-  if (!makeHop) { makeHop = makeHopD3 }
-  var adj = unweightedAdjacencyMatrix(nodes, edges,{id: id, source: source, target: target});
-  var hopMatrix = new FloydWarshall(adj).shortestPaths;
-  var hops = {1: edges}
-  hopMatrix.forEach((row,i)=>{
-    row.forEach((hopDistance,j)=>{
-      if(hopDistance > 1){
-        if(!hops[hopDistance]){hops[hopDistance] = []};
-        var h = makeHop(nodes[i], nodes[j], hopDistance, id);
-        hops[hopDistance].push(h);
+const defaultOptions = {
+  directed: true,
+  graphInterface: {},
+};
+
+export function graphHops(
+  nodes,
+  edges,
+  opts = defaultOptions
+) {
+  let { directed, graphInterface, makeHop } = opts;
+  // fallback to defaults
+  graphInterface = {...graphInterfaceDefault, ...graphInterface, ...opts};
+  // if a `makeHop` function is specified in the options use that one
+
+  makeHop = makeHop || graphInterface.makeHop;
+  // make the graph's adjacency matrix and find all shortest paths
+  const adjacencyMatrix = buildUnweightedAdjacencyMatrix(
+    nodes,
+    edges,
+    graphInterface
+  );
+  const hopsAdjacencyMatrix = new FloydWarshall(adjacencyMatrix).shortestPaths;
+
+  // make info objects for each hop
+  const hops = { 1: edges };
+  const addHop = (rowIndex, colIndex, hopDistance) => {
+    if (hopDistance > 1) {
+      if (!hops[hopDistance]) {
+        hops[hopDistance] = [];
       }
-    })
-  })
+      let hop = makeHop(
+        nodes[rowIndex],
+        nodes[colIndex],
+        hopDistance,
+        graphInterface.getNodeId
+      );
+      hops[hopDistance].push(hop);
+    }
+  };
+
+  if (directed) {
+    iterateDirected(hopsAdjacencyMatrix, addHop);
+  } else {
+    iterateUndirected(hopsAdjacencyMatrix, addHop);
+  }
+
   return hops;
 }
-
-export {unweightedAdjacencyMatrix, graphHops, makeHopVisJS, makeHopD3};
-
