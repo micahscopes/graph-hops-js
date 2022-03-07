@@ -1,27 +1,37 @@
 {
   "name": "graph-hops",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "",
-  "main": "dist/graph-hops.js",
-  "module": "dist/graph-hops.mjs",
-  "scripts": {
-    "test": "mocha test/test.js",
-    "documentation": "documentation readme index.js --section=API",
-    "build": "rollup -c"
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
   },
-  "author": "",
+  "scripts": {
+    "test": "mocha --require source-map-support/register test",
+    "build": "rimraf dist && mkdir dist && node esbuild.js",
+    "docs": "jsdoc-to-readme --src *.js"
+  },
+  "author": "micahscopes",
   "license": "ISC",
   "dependencies": {
     "floyd-warshall": "^1.0.0"
   },
   "devDependencies": {
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-env": "^1.6.1",
-    "documentation": "^5.3.3",
-    "mocha": "^3.2.0",
-    "rollup": "^0.41.4",
-    "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-commonjs": "^7.0.0",
-    "rollup-plugin-node-resolve": "^2.0.0"
+    "curry": "^1.2.0",
+    "esbuild": "^0.14.25",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "jsdoc-to-readme": "^1.0.3",
+    "mocha": "^9.2.1",
+    "rimraf": "^3.0.2",
+    "source-map-support": "^0.5.21"
   }
 }

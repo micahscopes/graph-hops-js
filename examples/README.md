@@ -1,5 +1,6 @@
 ## instructions
 ```
-> npm -g bower
-> bower install
+> npm -g npx
+> npm install
+> npx parcel index.html
 ```

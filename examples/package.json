@@ -1,0 +1,12 @@
+{
+  "name": "graph-hops-js-examples",
+  "version": "1.0.0",
+  "license": "ISC",
+  "dependencies": {
+    "vis-network": "^9.1.0",
+    "graph-hops": "file:.."
+  },
+  "devDependencies": {
+    "parcel": "^2.3.2"
+  }
+}
